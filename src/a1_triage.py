@@ -73,7 +73,7 @@ def classify_variant(row: dict, params: dict) -> tuple[str, str]:
         decision = "exclude"
         reason = f"Rule 6: non-priority gene {gene} has {impact} impact"
     return decision, reason
-    
+
 
 
 def triage(rows: list[dict], params: dict) -> list[dict]:
@@ -84,7 +84,7 @@ def triage(rows: list[dict], params: dict) -> list[dict]:
     results=[]
     for row in rows:
         decision,reason=classify_variant(row, params)
-        new_row=dict(row) 
+        new_row=dict(row)
         new_row["decision"]=decision
         new_row["reason"]=reason
         results.append(new_row)
