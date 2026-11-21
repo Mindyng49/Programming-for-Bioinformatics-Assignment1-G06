@@ -27,7 +27,7 @@ During the first two weeks, each member will have the following responsibilities
 
 - Member 3 (Zi Ning): Ranking implementer. Responsible for implementing rank_variants(), preparing the ranking pseudocode and developing ranking tests.
 
-Member 4 (Husna): Output and testing implementer. Responsible for implementing results_to_csv() and build_report(), testing output functions and helping with project integration and README documentation.
+- Member 4 (Husna): Output and testing implementer. Responsible for implementing results_to_csv() and build_report(), testing output functions and helping with project integration and README documentation.
 
 All members are required to write code, create tests, review other members' work and understand the complete project.
 
