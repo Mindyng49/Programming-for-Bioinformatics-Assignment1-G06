@@ -62,6 +62,20 @@ END
 *List the cases you will test: normal, boundary (exactly at YOUR thresholds, one below, one above), invalid or
 awkward input (empty list, k = 0, k larger than the data, messy text). One line per case.*
 
+### Ranking tests
+
+| Test case | Expected result |
+|---|---|
+| Normal ranking | Variants marked `"prioritize"` rank ahead of `"review"` and within the same decision tier, impacts sort in order: `"high"`, `"moderate"`, `"low"`, `"modifier"`. |
+| Excluded variants | Any record with `"decision": "exclude"` is filtered out and never appears in the returned list, regardless of its impact or quality. |
+| Sorting ties | When decision and impact match, ties are broken by higher `quality` first, then higher `depth` and finally smaller `pos` (using numeric, not string, comparison). |
+| Zero `k` | Passing `k = 0` returns an empty list `[]` without raising an error. |
+| Large `k` | When `k` exceeds the number of non-excluded records, all eligible sorted records are returned without raising an index error. |
+| Negative `k` | Passing a negative integer (e.g., `k = -1`) raises a `ValueError`. |
+| Empty results | Passing an empty `results` list (or a list containing only `"exclude"` records) returns an empty list `[]`. |
+| Input preservation | The original `results` list and its dictionaries remain unmodified in their initial order after calling `rank_variants()`. |
+
+
 ## 5. Work plan
 
 *Who builds which function, in which order, and how you will review each other's code.*
