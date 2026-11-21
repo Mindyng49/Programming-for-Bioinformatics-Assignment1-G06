@@ -5,8 +5,11 @@
 
 ## Group
 
-- Group ID: <your group id>
-- Members: <full name (matric)>, <full name (matric)>, <full name (matric)>
+- Group ID: G06
+- Member 1: MINDY NG YU FANG, A24CS0267, designer and coordinator
+- Member 2: ELEANOR TING PIK EN, A24CS0247, summary implementer
+- Member 3: WONG ZI NING, A24CS0313, ranking implementer
+- Member 4: HUSNA SAFIYYAH BINTI MUHAMMAD FAROUK, A24CS0083, output and testing implementer
 
 ## What this project does
 
