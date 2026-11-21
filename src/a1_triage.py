@@ -104,6 +104,16 @@ def count_labels(labels: list[str], keys: tuple[str, ...]) -> dict[str, int]:
             counts[label]+=1
     return counts
 
+    for row in rows:
+        decision, reason = classify_variant(row, params)
+
+        new_row = row.copy()
+        new_row["decision"] = decision
+        new_row["reason"] = reason
+
+        results.append(new_row)
+
+    return results
 
 def decision_counts(results: list[dict]) -> dict[str, int]:
     """Number of results per decision; keys are always prioritize, review, exclude (in order)."""
