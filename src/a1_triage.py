@@ -54,12 +54,13 @@ def triage(rows: list[dict], params: dict) -> list[dict]:
     """
     results=[]
     for row in rows:
-        decision,reason=classify_variant(row,params)
-        new_row=dict(row)  
+        decision,reason=classify_variant(row, params)
+        new_row=dict(row) 
         new_row["decision"]=decision
         new_row["reason"]=reason
         results.append(new_row)
     return results
+
 
 def normalise_label(text) -> str:
     """Return a label with surrounding spaces removed and case folded (' HIGH ' -> 'high')."""
@@ -68,16 +69,18 @@ def normalise_label(text) -> str:
 
 def count_labels(labels: list[str], keys: tuple[str, ...]) -> dict[str, int]:
     """Count how often each key appears in labels; every key is present (zeros included), in order."""
-    counts={key: 0 for key in keys}
+    counts = {key: 0 for key in keys}
     for label in labels:
         if label in counts:
             counts[label]+=1
     return counts
 
+
 def decision_counts(results: list[dict]) -> dict[str, int]:
     """Number of results per decision; keys are always prioritize, review, exclude (in order)."""
     decisions=[normalise_label(result["decision"]) for result in results]
     return count_labels(decisions,DECISIONS)
+
 
 def impact_counts(results: list[dict]) -> dict[str, int]:
     """Impact counts over variants that were NOT excluded.
@@ -97,19 +100,19 @@ def gene_summary(results: list[dict]) -> dict[str, dict]:
     Each value is {"total": n, "prioritize": a, "review": b, "exclude": c, "mean_depth": d}
     where mean_depth is the mean depth of ALL the gene's variants, rounded to 1 decimal.
     """
-    by_gene:dict[str,list[dict]]={}
+    by_gene: dict[str,list[dict]]={}
     for result in results:
         gene=str(result["gene"]).strip()
         by_gene.setdefault(gene,[]).append(result)
 
     summary={}
     for gene in sorted(by_gene):
-        gene_results=by_gene[gene]
-        entry={"total":len(gene_results)}
+        gene_results = by_gene[gene]
+        entry = {"total": len(gene_results)}
         entry.update(decision_counts(gene_results))
-        depths=[int(result["depth"]) for result in gene_results]
-        entry["mean_depth"]=round(sum(depths)/len(depths),MEAN_DEPTH_DECIMALS)
-        summary[gene]=entry
+        depths = [int(result["depth"]) for result in gene_results]
+        entry["mean_depth"] = round(sum(depths) / len(depths), MEAN_DEPTH_DECIMALS)
+        summary[gene] = entry
     return summary
 
 
