@@ -44,7 +44,44 @@ def classify_variant(row: dict, params: dict) -> tuple[str, str]:
     Gene symbols and impact labels are compared after strip() and case folding.
     depth, quality and pos may arrive as text.
     """
+<<<<<<< Updated upstream
     raise NotImplementedError("TODO: implement classify_variant")
+=======
+
+    depth = int(row["depth"])
+    quality = int(row["quality"])
+    gene_symbol = str(row["gene"]).strip()  # as written, used in the reason text
+    gene = gene_symbol.casefold()  # used for comparing with the priority genes
+    impact = str(row["impact"]).strip().casefold()
+
+    min_depth = params["min_depth"]
+    min_quality = params["min_quality"]
+    priority_genes = params["priority_genes"]
+
+    if depth < min_depth:
+        decision = "exclude"
+        reason = f"Rule 1: depth {depth} is below min_depth {min_depth}"
+        return(decision,reason)
+    elif quality < min_quality:
+        decision = "exclude"
+        reason = f"Rule 2: quality {quality} is below min_quality {min_quality}"
+        return decision, reason
+    elif gene in {g.strip().casefold() for g in priority_genes} and impact in PRIORITY_IMPACTS:
+        decision = "prioritize"
+        reason = f"Rule 3: priority gene {gene_symbol} has {impact} impact"
+        return decision, reason
+    elif gene in {g.strip().casefold() for g in priority_genes} and impact in ("low", "modifier"):
+        decision = "review"
+        reason = f"Rule 4: priority gene {gene_symbol} has {impact} impact"
+    elif gene not in {g.strip().casefold() for g in priority_genes} and impact in PRIORITY_IMPACTS:
+        decision = "review"
+        reason = f"Rule 5: non-priority gene {gene_symbol} has {impact} impact"
+    else:
+        decision = "exclude"
+        reason = f"Rule 6: non-priority gene {gene_symbol} has {impact} impact"
+    return decision, reason
+
+>>>>>>> Stashed changes
 
 
 def triage(rows: list[dict], params: dict) -> list[dict]:
@@ -127,6 +164,36 @@ def rank_variants(results: list[dict], k: int) -> list[dict]:
     """
     raise NotImplementedError("TODO: implement rank_variants")
 
+<<<<<<< Updated upstream
+=======
+    filtered_results = []
+    for record in results:
+        if normalise_label(record["decision"]) != "exclude":
+            filtered_results.append(record)
+
+    decision_priority = {
+        "prioritize": 1,
+        "review": 2,
+    }
+    impact_priority = {
+        "high": 1,
+        "moderate": 2,
+        "low": 3,
+        "modifier": 4,
+    }
+
+    def ranking_key(record: dict) -> tuple[int, int, int, int, int]:
+        return (
+            decision_priority[normalise_label(record["decision"])],
+            impact_priority[normalise_label(record["impact"])],
+            -int(record["quality"]),
+            -int(record["depth"]),
+            int(record["pos"]),
+        )
+
+    sorted_results = sorted(filtered_results, key=ranking_key)
+    return sorted_results[:k]
+>>>>>>> Stashed changes
 
 def results_to_csv(results: list[dict]) -> str:
     """CSV text: a header line (CSV_COLUMNS) and one line per result in the given order.
