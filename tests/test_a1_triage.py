@@ -4,6 +4,7 @@ Boundary tests use OUR thresholds from data/params.json: min_depth = 8, min_qual
 Test numbers match the test plan in docs/design.md section 4.
 """
 import copy
+
 import pytest
 
 from a1_triage import (
@@ -23,6 +24,14 @@ PARAMS = {
     "priority_genes": ["EGFR", "KRAS", "MYC", "CFTR", "PTEN"],
     "top_k": 8,
 }
+
+
+def make_row(variant="v1", gene="EGFR", depth="30", quality="90", impact="high", pos="100"):
+    """One raw variant row as load_variants() gives it (every value is text)."""
+    return {
+        "variant": variant, "gene": gene, "chrom": "7", "pos": pos, "ref": "A", "alt": "G",
+        "depth": depth, "quality": quality, "impact": impact,
+    }
 
 
 def make_result(variant="v1", gene="EGFR", depth="30", quality="90", impact="high",
