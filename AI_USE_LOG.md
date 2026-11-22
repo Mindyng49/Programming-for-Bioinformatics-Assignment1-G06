@@ -7,7 +7,7 @@
 - Student name: <full name>
 - Matric no: <matric>
 - Group ID: G06
-- AI level: <0, 1 or 2 - see the assessment brief>
+- AI level: 1
 - Tools cited: UTM format, OpenAI (2026). ChatGPT (GPT-6). Retrieved 22 November 2026 from https://chat.openai.com
 
 ## Declaration (tick exactly one)
@@ -59,3 +59,50 @@
 - My change: Corrected the variable assignments
 - Used in: src/a1_triage.py – classify_variant()
 
+## Entry 5
+
+- Student: WONG ZI NING (A24CS0313), Member 3
+- Date: 22 November 2026 1:10am
+- Tool: OpenAI (2026). ChatGPT (GPT-6). https://chat.openai.com
+- Purpose: design guidance
+- Prompt: "can u guide me on the rank_variants test plan based on the assignment requirement? what cases should i include?"
+- Output: ChatGPT explained the required ranking order and suggested test categories such as excluded records, tie-breaking, k = 0, negative k, large k and input preservation.
+- Verified by: Checked the requirements for `rank_variants()` and compared the planned cases with the assignment brief.
+- My change: Wrote the ranking test-plan section for `docs/design.md`.
+- Used in: `docs/design.md`
+
+## Entry 6
+
+- Student: WONG ZI NING (A24CS0313), Member 3
+- Date: 22 November 2026 2:13am
+- Tool: OpenAI (2026). ChatGPT (GPT-6). https://chat.openai.com
+- Purpose: programming guidance and review
+- Prompt: "help me check my rank_variants function. does my sorting follow decision, impact, quality, depth and pos correctly?"
+- Output: ChatGPT discussed filtering excluded records, sorting priorities, numeric comparisons and checking that the original inputs are not changed.
+- Verified by: Reviewed the ranking conditions against the brief and ran the available ranking tests.
+- My change: Implemented and reviewed `rank_variants(results, k)` as my assigned function.
+- Used in: `src/a1_triage.py`
+
+## Entry 7
+
+- Student: WONG ZI NING (A24CS0313), Member 3
+- Date: 22 November 2026 3:20am
+- Tool: OpenAI (2026). ChatGPT (GPT-6). https://chat.openai.com
+- Purpose: testing and debugging
+- Prompt : "i already added the ranking tests, can u check the pytest and ruff output? is there anything missing?"
+- Output: ChatGPT explained the test results, checking sorting tie-breaks and boundary cases, and the meaning of Ruff formatting and lint feedback.
+- Verified by: Ran pytest for the ranking tests; all 11 of my ranking tests passed. Ran Ruff to check code quality during the workflow.
+- My change: Completed and checked ranking tests covering decision, impact, quality, depth, position, exclusions, k values, empty input and preservation of input data.
+- Used in: `tests/test_a1_triage.py`
+
+## Entry 8
+
+- Student: WONG ZI NING (A24CS0313), Member 3
+- Date: 22 November 2026 4:10am
+- Tool: OpenAI (2026). ChatGPT (GPT-6). https://chat.openai.com
+- Purpose: documentation review and revision
+- Prompt: "compare is there any thing left on by checking the origin(the deault with)lecturer version"
+- Output: ChatGPT compared the group's design to the lecturer's template and generated revised text.
+- Verified by: Reviewed `git diff -- docs/design.md`.
+- My change: Incorporated AI-generated documentation edits, committed them as `e7b67ec`, pushed `zining` and merged the change through the group workflow.
+- Used in: `docs/design.md`
