@@ -13,7 +13,10 @@
 
 ## What this project does
 
+The service also ranks non-excluded variants based on decision priority, impact, quality, depth and genomic position, returning the top-k candidates for further review.
+
 <Three or four sentences: what a variant triage service is, what goes in, what comes out.>
+
 
 ## Set up
 
@@ -47,12 +50,14 @@ They are read at run time and passed to the functions; they are not typed into t
 ## Limitations
 
 <At least two honest limitations, for example: rules use depth, quality and impact only; the data are synthetic.>
+The ranking process uses predefined decision, impact, quality, depth and position criteria rather than clinical evidence or predictive models. Therefore, ranking results are intended for educational demonstration only and should not be used for clinical decision-making.
 
 ## Who did what
 
 | Member | Main contributions | Commits |
 |---|---|---|
 | <name> | <files or functions> | <number> |
+| WONG ZI NING (A24CS0313) | Implemented `rank_variants()` in `src/a1_triage.py`; wrote 11 ranking tests in `tests/test_a1_triage.py`; contributed the ranking test plan and design improvements in `docs/design.md`; assisted with classification fixes and integration review. | 9 |
 
 ## AI use
 
