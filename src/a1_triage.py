@@ -146,12 +146,12 @@ def gene_summary(results: list[dict]) -> dict[str, dict]:
 
     summary={}
     for gene in sorted(by_gene):
-        gene_results = by_gene[gene]
-        entry = {"total": len(gene_results)}
+        gene_results=by_gene[gene]
+        entry={"total": len(gene_results)}
         entry.update(decision_counts(gene_results))
-        depths = [int(result["depth"]) for result in gene_results]
-        entry["mean_depth"] = round(sum(depths) / len(depths), MEAN_DEPTH_DECIMALS)
-        summary[gene] = entry
+        depths=[int(result["depth"]) for result in gene_results]
+        entry["mean_depth"]=round(sum(depths)/len(depths),MEAN_DEPTH_DECIMALS)
+        summary[gene]=entry
     return summary
 
 
