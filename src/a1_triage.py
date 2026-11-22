@@ -60,15 +60,18 @@ def classify_variant(row: dict, params: dict) -> tuple[str, str]:
         return(decision,reason)
     elif quality < min_quality:
         decision = "exclude"
-        reason = f"Rule 2: quality {quality} is below min_quality{min_depth}"
+        reason = f"Rule 2: quality {quality} is below min_quality {min_quality}"
         return decision, reason
-    elif priority_genes and impact in PRIORITY_IMPACTS:
+    elif gene in {g.strip().casefold() for g in priority_genes} and impact in PRIORITY_IMPACTS:
         decision = "prioritize"
         reason = f"Rule 3: priority gene {gene} has {impact} impact"
         return decision, reason
-    elif gene in priority_genes and impact in ("low", "modifier"):
+    elif gene in {g.strip().casefold() for g in priority_genes} and impact in ("low", "modifier"):
         decision = "review"
         reason = f"Rule 4: priority gene {gene} has {impact} impact"
+    elif gene not in {g.strip().casefold() for g in priority_genes} and impact in PRIORITY_IMPACTS:
+        decision = "review"
+        reason = f"Rule 5: non-priority gene {gene} has {impact} impact"
     else:
         decision = "exclude"
         reason = f"Rule 6: non-priority gene {gene} has {impact} impact"
@@ -104,16 +107,6 @@ def count_labels(labels: list[str], keys: tuple[str, ...]) -> dict[str, int]:
             counts[label]+=1
     return counts
 
-    for row in rows:
-        decision, reason = classify_variant(row, params)
-
-        new_row = row.copy()
-        new_row["decision"] = decision
-        new_row["reason"] = reason
-
-        results.append(new_row)
-
-    return results
 
 def decision_counts(results: list[dict]) -> dict[str, int]:
     """Number of results per decision; keys are always prioritize, review, exclude (in order)."""
