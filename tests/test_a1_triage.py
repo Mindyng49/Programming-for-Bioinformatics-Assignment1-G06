@@ -576,3 +576,16 @@ def test_build_report_ends_with_newline():
     report = build_report(results, params)
 
     assert report.endswith("\n")
+    
+def test_build_report_handles_empty_results():
+    params = {
+        "min_depth": 8,
+        "min_quality": 80,
+        "priority_genes": ["EGFR", "KRAS"],
+        "top_k": 8,
+    }
+
+    report = build_report([], params)
+
+    assert "Variants: 0" in report
+    assert "Top 8 variants" in report
