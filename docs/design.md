@@ -1,61 +1,50 @@
 # Design - Variant Triage Service
 
-Write this BEFORE you write the code, then keep it up to date. It is marked by the lecturer.
-Use your own words, your own thresholds and your own data. Delete the guidance in italics.
+Group ID: G06
 
-Group ID: G06     
-Thresholds from data/params.json: min_depth = 8, min_quality = 80, top_k = 8, priority_genes = EGFR, KRAS, MYC, CFTR, PTEN
+Thresholds from `data/params.json`: `min_depth = 8`, `min_quality = 80`, `top_k = 8`, `priority_genes = EGFR, KRAS, MYC, CFTR, PTEN`
 
 ## 1. Decomposition
 
 | Question | Our answer |
 |---|---|
-| Input | 50 synthetic variants from CSV and parameters from JSON | 
-| Output | Decisions, reasons, summaries, ranking, CSV and text report |
-| Constraints (named thresholds, what happens at exactly the threshold) | Named thresholds, inclusive boundaries, correct rule order, unchanged input |
-| Rule order and why the order matters | Six rules, starting with depth and ending with impact or gene classification |
-| Out of scope | Real patient data, clinical diagnosis and actual clinical decision-making |
+| Input | 50 synthetic variant records from `data/variants.csv` and the configuration in `data/params.json` (minimum depth, minimum quality, priority genes, and top-k). |
+| Output | A decision and reason for each variant, decision/impact/gene summaries, ranked non-excluded variants, CSV text, and a text report. |
+| Constraints (named thresholds, what happens at exactly the threshold) | `min_depth = 8` and `min_quality = 80`. Depth and quality must be **below** their respective thresholds to trigger exclusion; values equal to the thresholds pass those checks. Apply the six rules in order, use numeric comparisons, and do not modify the original input dictionaries. |
+| Rule order and why the order matters | Check insufficient depth first (Rule 1), then insufficient quality (Rule 2). Only variants passing both thresholds are classified by priority-gene membership and impact (Rules 3–6). The first matching rule determines the decision, preventing low-confidence variants from being prioritized. |
+| Out of scope | Real patient data, clinical diagnosis, medical treatment recommendations, and actual clinical decision-making. |
 
 ## 2. Pseudocode or flowchart of classify_variant
-
 
 ```text
 START
 
-INPUT row and params
+INPUT row, params
 
-GET depth and quality
-GET gene and impact
-GET minimum thresholds
-GET priority genes
+depth <- integer value of row["depth"]
+quality <- integer value of row["quality"]
+gene <- trimmed, case-insensitive value of row["gene"]
+impact <- trimmed, case-insensitive value of row["impact"]
+min_depth <- params["min_depth"]
+min_quality <- params["min_quality"]
+priority_genes <- params["priority_genes"] (compare gene names case-insensitively)
 
-Rule 1:
-IF depth is below min_depth
-     exclude variant
-     return decision and reason
-Rule 2:
-ELSE IF quality is below min_quality
-     exclude variant
-     return decision and reason
-Rule 3:
-ELSE IF gene is a priority gene AND impact is high or moderate
-     prioritize variant
-     return decision and reason
-Rule 4:
-ELSE IF gene is a priority gene AND impact is low or modifier
-     review variant
-     return decision and reason
-Rule 5:
-ELSE IF gene is not a priority gene AND impact is high or moderate
-     review variant
-     return decision and reason
-Rule 6:
+IF depth < min_depth THEN
+    RETURN "exclude", reason describing Rule 1 and the depth threshold
+ELSE IF quality < min_quality THEN
+    RETURN "exclude", reason describing Rule 2 and the quality threshold
+ELSE IF gene is in priority_genes AND impact is "high" or "moderate" THEN
+    RETURN "prioritize", reason describing Rule 3
+ELSE IF gene is in priority_genes AND impact is "low" or "modifier" THEN
+    RETURN "review", reason describing Rule 4
+ELSE IF gene is not in priority_genes AND impact is "high" or "moderate" THEN
+    RETURN "review", reason describing Rule 5
 ELSE
-     exclude variant
-     return decision and reason
+    RETURN "exclude", reason describing Rule 6
+    (non-priority gene with "low" or "modifier" impact)
+END IF
 
 END
-
 ```
 
 ## 3. Hand trace
@@ -111,6 +100,20 @@ output dictionary is in alphabetical order (dicts keep insertion order). Each ge
 a dictionary: total, the decision counts (reusing decision_counts) and mean_depth, which is the mean
 of int(depth) over ALL the gene's variants (excluded ones too), rounded to 1 decimal.
 >>>>>>> Stashed changes
+
+### Ranking tests
+
+| Test case | Expected result |
+|---|---|
+| Normal ranking | Variants marked `"prioritize"` rank ahead of `"review"` and within the same decision tier, impacts sort in order: `"high"`, `"moderate"`, `"low"`, `"modifier"`. |
+| Excluded variants | Any record with `"decision": "exclude"` is filtered out and never appears in the returned list, regardless of its impact or quality. |
+| Sorting ties | When decision and impact match, ties are broken by higher `quality` first, then higher `depth` and finally smaller `pos` (using numeric, not string, comparison). |
+| Zero `k` | Passing `k = 0` returns an empty list `[]` without raising an error. |
+| Large `k` | When `k` exceeds the number of non-excluded records, all eligible sorted records are returned without raising an index error. |
+| Negative `k` | Passing a negative integer (e.g., `k = -1`) raises a `ValueError`. |
+| Empty results | Passing an empty `results` list (or a list containing only `"exclude"` records) returns an empty list `[]`. |
+| Input preservation | The original `results` list and its dictionaries remain unmodified in their initial order after calling `rank_variants()`. |
+
 
 ## 5. Work plan
 

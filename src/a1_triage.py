@@ -4,6 +4,8 @@ Reads variant calls, applies ordered triage rules with named thresholds, records
 reason for every decision and produces summaries, a ranked top-k list, a CSV text
 and a short text report. Nothing here is clinical advice.
 """
+
+import io
 import csv
 import json
 import sys
@@ -44,15 +46,13 @@ def classify_variant(row: dict, params: dict) -> tuple[str, str]:
     Gene symbols and impact labels are compared after strip() and case folding.
     depth, quality and pos may arrive as text.
     """
-<<<<<<< Updated upstream
-    raise NotImplementedError("TODO: implement classify_variant")
-=======
 
     depth = int(row["depth"])
     quality = int(row["quality"])
     gene_symbol = str(row["gene"]).strip()  # as written, used in the reason text
     gene = gene_symbol.casefold()  # used for comparing with the priority genes
     impact = str(row["impact"]).strip().casefold()
+
 
     min_depth = params["min_depth"]
     min_quality = params["min_quality"]
@@ -67,22 +67,19 @@ def classify_variant(row: dict, params: dict) -> tuple[str, str]:
         reason = f"Rule 2: quality {quality} is below min_quality {min_quality}"
         return decision, reason
     elif gene in {g.strip().casefold() for g in priority_genes} and impact in PRIORITY_IMPACTS:
-        decision = "prioritize"
-        reason = f"Rule 3: priority gene {gene_symbol} has {impact} impact"
+        decision = "prioritize"    
+        reason = f"Rule 3: priority gene {gene} has {impact} impact"
         return decision, reason
     elif gene in {g.strip().casefold() for g in priority_genes} and impact in ("low", "modifier"):
         decision = "review"
-        reason = f"Rule 4: priority gene {gene_symbol} has {impact} impact"
+        reason = f"Rule 4: priority gene {gene} has {impact} impact"
     elif gene not in {g.strip().casefold() for g in priority_genes} and impact in PRIORITY_IMPACTS:
         decision = "review"
-        reason = f"Rule 5: non-priority gene {gene_symbol} has {impact} impact"
+        reason = f"Rule 5: non-priority gene {gene} has {impact} impact"
     else:
         decision = "exclude"
-        reason = f"Rule 6: non-priority gene {gene_symbol} has {impact} impact"
+        reason = f"Rule 6: non-priority gene {gene} has {impact} impact"
     return decision, reason
-
->>>>>>> Stashed changes
-
 
 def triage(rows: list[dict], params: dict) -> list[dict]:
     """Classify every row. Returns NEW dicts (row fields plus decision and reason), same order.
@@ -92,7 +89,7 @@ def triage(rows: list[dict], params: dict) -> list[dict]:
     results=[]
     for row in rows:
         decision,reason=classify_variant(row, params)
-        new_row=dict(row) 
+        new_row=dict(row)
         new_row["decision"]=decision
         new_row["reason"]=reason
         results.append(new_row)
@@ -162,13 +159,15 @@ def rank_variants(results: list[dict], k: int) -> list[dict]:
     Raises:
         ValueError: if k is negative.
     """
-    raise NotImplementedError("TODO: implement rank_variants")
-
-<<<<<<< Updated upstream
-=======
     filtered_results = []
     for record in results:
         if normalise_label(record["decision"]) != "exclude":
+    if k < 0:
+        raise ValueError("k must be non-negative")
+
+    filtered_results = []
+    for record in results:
+        if record["decision"] != "exclude":
             filtered_results.append(record)
 
     decision_priority = {
@@ -184,8 +183,8 @@ def rank_variants(results: list[dict], k: int) -> list[dict]:
 
     def ranking_key(record: dict) -> tuple[int, int, int, int, int]:
         return (
-            decision_priority[normalise_label(record["decision"])],
-            impact_priority[normalise_label(record["impact"])],
+            decision_priority[record["decision"]],
+            impact_priority[record["impact"]],
             -int(record["quality"]),
             -int(record["depth"]),
             int(record["pos"]),
@@ -193,14 +192,31 @@ def rank_variants(results: list[dict], k: int) -> list[dict]:
 
     sorted_results = sorted(filtered_results, key=ranking_key)
     return sorted_results[:k]
->>>>>>> Stashed changes
 
 def results_to_csv(results: list[dict]) -> str:
     """CSV text: a header line (CSV_COLUMNS) and one line per result in the given order.
 
     Every line ends with a newline. Reason text contains no commas, so no quoting is needed.
     """
-    raise NotImplementedError("TODO: implement results_to_csv")
+    output = io.StringIO()
+    writer = csv.writer(output, lineterminator="\n")
+
+    writer.writerow(CSV_COLUMNS)
+
+    for result in results:
+        writer.writerow([
+            result["variant"],
+            result["gene"],
+            result["chrom"],
+            result["pos"],
+            result["depth"],
+            result["quality"],
+            result["impact"],
+            result["decision"],
+            result["reason"],
+        ])
+
+    return output.getvalue()
 
 
 def build_report(results: list[dict], params: dict) -> str:
@@ -210,7 +226,32 @@ def build_report(results: list[dict], params: dict) -> str:
     'Variants: N', one 'decision: count' line per decision, a blank line,
     'Top K variants' and then 'rank. variant | gene | impact | decision' lines.
     """
-    raise NotImplementedError("TODO: implement build_report")
+    counts = decision_counts(results)
+    top_k = params["top_k"]
+    top_variants = rank_variants(results, top_k)
+
+    lines = [
+        "Variant triage report (synthetic teaching data)",
+        (
+            f"Thresholds: min_depth={params['min_depth']} "
+            f"min_quality={params['min_quality']}"
+        ),
+        f"Priority genes: {', '.join(params['priority_genes'])}",
+        f"Variants: {len(results)}",
+        f"prioritize: {counts['prioritize']}",
+        f"review: {counts['review']}",
+        f"exclude: {counts['exclude']}",
+        "",
+        f"Top {top_k} variants",
+    ]
+
+    for rank, variant in enumerate(top_variants, start=1):
+        lines.append(
+            f"{rank}. {variant['variant']} | {variant['gene']} | "
+            f"{variant['impact']} | {variant['decision']}"
+        )
+
+    return "\n".join(lines) + "\n"
 
 
 def main(argv: list[str] | None = None) -> int:

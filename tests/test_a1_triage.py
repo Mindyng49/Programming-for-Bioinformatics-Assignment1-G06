@@ -1,18 +1,9 @@
-<<<<<<< Updated upstream
-"""Group tests for a1_triage.py (synthetic teaching data only)."""
-from a1_triage import decision_counts, gene_summary, impact_counts
-
-
-def make_result(gene="EGFR", depth="20", impact="high", decision="prioritize", variant="v1"):
-    """Build one hand-made result dict (as triage() would return), without calling classify_variant."""
-=======
 """Group G06 tests for a1_triage.py (synthetic teaching data only).
 
 Boundary tests use OUR thresholds from data/params.json: min_depth = 8, min_quality = 80.
 Test numbers match the test plan in docs/design.md section 4.
 """
 import copy
-
 import pytest
 
 from a1_triage import (
@@ -32,15 +23,6 @@ PARAMS = {
     "priority_genes": ["EGFR", "KRAS", "MYC", "CFTR", "PTEN"],
     "top_k": 8,
 }
-
-
-def make_row(variant="v1", gene="EGFR", depth="30", quality="90", impact="high", pos="100"):
-    """One raw variant row as load_variants() gives it (every value is text)."""
->>>>>>> Stashed changes
-    return {
-        "variant": variant, "gene": gene, "chrom": "7", "pos": pos, "ref": "A", "alt": "G",
-        "depth": depth, "quality": quality, "impact": impact,
-    }
 
 
 def make_result(variant="v1", gene="EGFR", depth="30", quality="90", impact="high",
@@ -135,15 +117,6 @@ def test_07_gene_summary_alphabetical_counts_mean_depth_and_empty():
     assert gene_summary([]) == {}
 
 
-<<<<<<< Updated upstream
-def test_summaries_do_not_modify_input():
-    results = [make_result(gene="CFTR", impact=" LOW ", decision="review")]
-    snapshot = [dict(result) for result in results]
-    decision_counts(results)
-    impact_counts(results)
-    gene_summary(results)
-    assert results == snapshot
-=======
 # ---- Member 3: rank_variants -------------------------------------------------
 
 def test_08_rank_variants_sort_order_and_tie_breaks():
@@ -202,4 +175,3 @@ def test_12_build_report_format_and_top_k_lists_only_qualifying():
     assert lines[8] == "Top 8 variants"
     # top_k is 8 but only 2 variants qualify, so only those 2 are listed
     assert lines[9:] == ["1. v1 | EGFR | high | prioritize", "2. v2 | EGFR | low | review"]
->>>>>>> Stashed changes

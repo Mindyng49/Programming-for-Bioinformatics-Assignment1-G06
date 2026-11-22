@@ -75,5 +75,5 @@ every member signs the log and this contract.
 
 - Signed: MINDY NG YU FANG, A24CS0267, 21/11/2026
 - Signed: ELEANOR TING PIK EN, A24CS0247,  18/11/2026
-- Signed: WONG ZI NING, A24CS0313,  <date>
+- Signed: WONG ZI NING, A24CS0313,  21/11/2026
 - Signed: HUSNA SAFIYYAH BINTI MUHAMMAD FAROUK, A24CS0083, <date>
