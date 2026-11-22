@@ -1,7 +1,14 @@
 import copy
 import pytest
 
-from a1_triage import decision_counts, gene_summary, impact_counts, rank_variants
+from a1_triage import (
+    build_report,
+    decision_counts,
+    gene_summary,
+    impact_counts,
+    rank_variants,
+    results_to_csv,
+)
 
 def test_rank_variants_decision_priority():
     results = [
@@ -394,3 +401,166 @@ def test_summaries_do_not_modify_input():
     impact_counts(results)
     gene_summary(results)
     assert results == snapshot
+
+# ---- results_to_csv -------------------------------------------------------
+
+def test_results_to_csv_header():
+    csv_text = results_to_csv([])
+
+    expected_header = (
+        "variant,gene,chrom,pos,depth,quality,impact,decision,reason\n"
+    )
+
+    assert csv_text == expected_header
+
+
+def test_results_to_csv_one_result():
+    results = [make_result()]
+
+    csv_text = results_to_csv(results)
+
+    lines = csv_text.strip().splitlines()
+
+    expected_line_count = 2
+    assert len(lines) == expected_line_count
+    assert lines[1] == "v1,EGFR,chr1,100,20,90,high,prioritize,test"
+
+
+def test_results_to_csv_multiple_results():
+    results = [
+        make_result(variant="v1", gene="EGFR"),
+        make_result(variant="v2", gene="KRAS"),
+    ]
+
+    csv_text = results_to_csv(results)
+    lines = csv_text.strip().splitlines()
+
+    expected_line_count = 3
+    assert len(lines) == expected_line_count
+    assert lines[1].startswith("v1,EGFR")
+    assert lines[2].startswith("v2,KRAS")
+
+
+def test_results_to_csv_empty_results():
+    csv_text = results_to_csv([])
+
+    assert csv_text.count("\n") == 1
+    assert csv_text.startswith("variant,gene")
+
+
+def test_results_to_csv_ends_with_newline():
+    results = [make_result()]
+
+    csv_text = results_to_csv(results)
+
+    assert csv_text.endswith("\n")
+
+# ---- build_report ---------------------------------------------------------
+
+def test_build_report_title():
+    results = []
+    params = {
+        "min_depth": 8,
+        "min_quality": 80,
+        "priority_genes": ["EGFR", "KRAS"],
+        "top_k": 2,
+    }
+
+    report = build_report(results, params)
+
+    assert report.startswith(
+        "Variant triage report (synthetic teaching data)"
+    )
+
+
+def test_build_report_thresholds_and_priority_genes():
+    results = []
+    params = {
+        "min_depth": 8,
+        "min_quality": 80,
+        "priority_genes": ["EGFR", "KRAS"],
+        "top_k": 2,
+    }
+
+    report = build_report(results, params)
+
+    assert "Thresholds: min_depth=8 min_quality=80" in report
+    assert "Priority genes: EGFR, KRAS" in report
+
+
+def test_build_report_decision_counts():
+    results = [
+        make_result(variant="v1", decision="prioritize"),
+        make_result(variant="v2", decision="review"),
+        make_result(variant="v3", decision="exclude"),
+    ]
+
+    params = {
+        "min_depth": 8,
+        "min_quality": 80,
+        "priority_genes": ["EGFR", "KRAS"],
+        "top_k": 2,
+    }
+
+    report = build_report(results, params)
+
+    assert "Variants: 3" in report
+    assert "prioritize: 1" in report
+    assert "review: 1" in report
+    assert "exclude: 1" in report
+
+
+def test_build_report_top_k():
+    results = [
+        make_result(variant="v1", impact="high", decision="prioritize"),
+        make_result(variant="v2", impact="moderate", decision="prioritize"),
+        make_result(variant="v3", impact="low", decision="review"),
+    ]
+
+    params = {
+        "min_depth": 8,
+        "min_quality": 80,
+        "priority_genes": ["EGFR", "KRAS"],
+        "top_k": 2,
+    }
+
+    report = build_report(results, params)
+
+    assert "Top 2 variants" in report
+    assert "1. v1 | EGFR | high | prioritize" in report
+    assert "2. v2 | EGFR | moderate | prioritize" in report
+    assert "v3" not in report
+
+
+def test_build_report_excludes_excluded_variants_from_top_k():
+    results = [
+        make_result(variant="v1", decision="exclude"),
+        make_result(variant="v2", decision="prioritize"),
+    ]
+
+    params = {
+        "min_depth": 8,
+        "min_quality": 80,
+        "priority_genes": ["EGFR", "KRAS"],
+        "top_k": 2,
+    }
+
+    report = build_report(results, params)
+
+    assert "2. v2 | EGFR | high | prioritize" not in report
+    assert "1. v2 | EGFR | high | prioritize" in report
+    assert "1. v1" not in report
+
+
+def test_build_report_ends_with_newline():
+    results = []
+    params = {
+        "min_depth": 8,
+        "min_quality": 80,
+        "priority_genes": ["EGFR", "KRAS"],
+        "top_k": 2,
+    }
+
+    report = build_report(results, params)
+
+    assert report.endswith("\n")
