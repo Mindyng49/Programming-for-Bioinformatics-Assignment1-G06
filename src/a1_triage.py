@@ -49,8 +49,10 @@ def classify_variant(row: dict, params: dict) -> tuple[str, str]:
 
     depth = int(row["depth"])
     quality = int(row["quality"])
-    gene = row["gene"].strip().casefold()
-    impact = row["impact"].strip().casefold()
+    gene_symbol = str(row["gene"]).strip()  # as written, used in the reason text
+    gene = gene_symbol.casefold()  # used for comparing with the priority genes
+    impact = str(row["impact"]).strip().casefold()
+
 
     min_depth = params["min_depth"]
     min_quality = params["min_quality"]
@@ -65,7 +67,7 @@ def classify_variant(row: dict, params: dict) -> tuple[str, str]:
         reason = f"Rule 2: quality {quality} is below min_quality {min_quality}"
         return decision, reason
     elif gene in {g.strip().casefold() for g in priority_genes} and impact in PRIORITY_IMPACTS:
-        decision = "prioritize"
+        decision = "prioritize"    
         reason = f"Rule 3: priority gene {gene} has {impact} impact"
         return decision, reason
     elif gene in {g.strip().casefold() for g in priority_genes} and impact in ("low", "modifier"):
@@ -78,8 +80,6 @@ def classify_variant(row: dict, params: dict) -> tuple[str, str]:
         decision = "exclude"
         reason = f"Rule 6: non-priority gene {gene} has {impact} impact"
     return decision, reason
-
-
 
 def triage(rows: list[dict], params: dict) -> list[dict]:
     """Classify every row. Returns NEW dicts (row fields plus decision and reason), same order.
@@ -159,6 +159,9 @@ def rank_variants(results: list[dict], k: int) -> list[dict]:
     Raises:
         ValueError: if k is negative.
     """
+    filtered_results = []
+    for record in results:
+        if normalise_label(record["decision"]) != "exclude":
     if k < 0:
         raise ValueError("k must be non-negative")
 
