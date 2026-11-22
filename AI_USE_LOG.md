@@ -8,7 +8,7 @@
 - Matric no: <A24CS0267, A24CS0247, A24CS0313, A24CS0083>
 - Group ID: G06
 - AI level: 1
-- Tools cited: UTM format, OpenAI (2026). ChatGPT (GPT-6). Retrieved 22 November 2026 from https://chat.openai.com; Anthropic (2026). Claude (Claude Opus 5.5) in Claude Code. Retrieved 22 November 2026 from https://claude.ai
+- Tools cited: UTM format, OpenAI (2026). ChatGPT (GPT-6). Retrieved 22 November 2026 from https://chat.openai.com
 
 ## Declaration (tick exactly one)
 
