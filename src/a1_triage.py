@@ -44,7 +44,36 @@ def classify_variant(row: dict, params: dict) -> tuple[str, str]:
     Gene symbols and impact labels are compared after strip() and case folding.
     depth, quality and pos may arrive as text.
     """
-    raise NotImplementedError("TODO: implement classify_variant")
+
+    depth = int(row["depth"])
+    quality = int(row["quality"])
+    gene = row["gene"].strip().casefold()
+    impact = row["impact"].strip().casefold()
+
+    min_depth = params["min_depth"]
+    min_quality = params["min_quality"]
+    priority_genes = params["priority_genes"]
+
+    if depth < min_depth:
+        decision = "exclude"
+        reason = f"Rule 1: depth {depth} is below min_depth {min_depth}"
+        return(decision,reason)
+    elif quality < min_quality:
+        decision = "exclude"
+        reason = f"Rule 2: quality {quality} is below min_quality{min_depth}"
+        return decision, reason
+    elif priority_genes and impact in PRIORITY_IMPACTS:
+        decision = "prioritize"
+        reason = f"Rule 3: priority gene {gene} has {impact} impact"
+        return decision, reason
+    elif gene in priority_genes and impact in ("low", "modifier"):
+        decision = "review"
+        reason = f"Rule 4: priority gene {gene} has {impact} impact"
+    else:
+        decision = "exclude"
+        reason = f"Rule 6: non-priority gene {gene} has {impact} impact"
+    return decision, reason
+
 
 
 def triage(rows: list[dict], params: dict) -> list[dict]:
@@ -55,7 +84,7 @@ def triage(rows: list[dict], params: dict) -> list[dict]:
     results=[]
     for row in rows:
         decision,reason=classify_variant(row, params)
-        new_row=dict(row) 
+        new_row=dict(row)
         new_row["decision"]=decision
         new_row["reason"]=reason
         results.append(new_row)
@@ -75,6 +104,16 @@ def count_labels(labels: list[str], keys: tuple[str, ...]) -> dict[str, int]:
             counts[label]+=1
     return counts
 
+    for row in rows:
+        decision, reason = classify_variant(row, params)
+
+        new_row = row.copy()
+        new_row["decision"] = decision
+        new_row["reason"] = reason
+
+        results.append(new_row)
+
+    return results
 
 def decision_counts(results: list[dict]) -> dict[str, int]:
     """Number of results per decision; keys are always prioritize, review, exclude (in order)."""
@@ -125,8 +164,36 @@ def rank_variants(results: list[dict], k: int) -> list[dict]:
     Raises:
         ValueError: if k is negative.
     """
-    raise NotImplementedError("TODO: implement rank_variants")
+    if k < 0:
+        raise ValueError("k must be non-negative")
 
+    filtered_results = []
+    for record in results:
+        if record["decision"] != "exclude":
+            filtered_results.append(record)
+
+    decision_priority = {
+        "prioritize": 1,
+        "review": 2,
+    }
+    impact_priority = {
+        "high": 1,
+        "moderate": 2,
+        "low": 3,
+        "modifier": 4,
+    }
+
+    def ranking_key(record: dict) -> tuple[int, int, int, int, int]:
+        return (
+            decision_priority[record["decision"]],
+            impact_priority[record["impact"]],
+            -int(record["quality"]),
+            -int(record["depth"]),
+            int(record["pos"]),
+        )
+
+    sorted_results = sorted(filtered_results, key=ranking_key)
+    return sorted_results[:k]
 
 def results_to_csv(results: list[dict]) -> str:
     """CSV text: a header line (CSV_COLUMNS) and one line per result in the given order.
