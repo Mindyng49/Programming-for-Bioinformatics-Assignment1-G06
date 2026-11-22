@@ -4,11 +4,11 @@
 
 - Course: SECB3203
 - Assessment: Assignment 1
-- Student name: <full name>
-- Matric no: <matric>
+- Student name: < MINDY NG YU FANG, ELEANOR TING PIK EN, WONG ZI NING, HUSNA SAFIYYAH BINTI MUHAMMAD FAROUK >
+- Matric no: <A24CS0267, A24CS0247, A24CS0313, A24CS0083,>
 - Group ID: G06
 - AI level: 1
-- Tools cited: UTM format, OpenAI (2026). ChatGPT (GPT-6). Retrieved 22 November 2026 from https://chat.openai.com
+- Tools cited: UTM format, OpenAI (2026). ChatGPT (GPT-6). Retrieved 22 November 2026 from https://chat.openai.com; Anthropic (2026). Claude (Claude Opus 5.5) in Claude Code. Retrieved 22 November 2026 from https://claude.ai
 
 ## Declaration (tick exactly one)
 
@@ -61,7 +61,6 @@
 
 ## Entry 5
 
-- Student: WONG ZI NING (A24CS0313), Member 3
 - Date: 22 November 2026 1:10am
 - Tool: OpenAI (2026). ChatGPT (GPT-6). https://chat.openai.com
 - Purpose: design guidance
@@ -73,7 +72,6 @@
 
 ## Entry 6
 
-- Student: WONG ZI NING (A24CS0313), Member 3
 - Date: 22 November 2026 2:13am
 - Tool: OpenAI (2026). ChatGPT (GPT-6). https://chat.openai.com
 - Purpose: programming guidance and review
@@ -85,7 +83,6 @@
 
 ## Entry 7
 
-- Student: WONG ZI NING (A24CS0313), Member 3
 - Date: 22 November 2026 3:20am
 - Tool: OpenAI (2026). ChatGPT (GPT-6). https://chat.openai.com
 - Purpose: testing and debugging
@@ -97,7 +94,6 @@
 
 ## Entry 8
 
-- Student: WONG ZI NING (A24CS0313), Member 3
 - Date: 22 November 2026 4:10am
 - Tool: OpenAI (2026). ChatGPT (GPT-6). https://chat.openai.com
 - Purpose: documentation review and revision
@@ -106,3 +102,54 @@
 - Verified by: Reviewed `git diff -- docs/design.md`.
 - My change: Incorporated AI-generated documentation edits, committed them as `e7b67ec`, pushed `zining` and merged the change through the group workflow.
 - Used in: `docs/design.md`
+
+## Entry 9
+- Date: 22 November 2026
+- Tool: OpenAI (2026). ChatGPT (GPT-6). Retrieved [date] from https://chat.openai.com
+- Purpose: programming guidance
+- Prompt: "Can you guide me on how to implement decision_counts(results) based on the assignment requirements?"
+- Output: ChatGPT explained how to use dictionaries to count the occurrences of each decision category and handle empty input lists and zero counts.
+- Verified by: Compared the suggested counting logic with the assignment requirements and checked the expected output structure.
+- My change: Implemented the decision_counts(results) function and handled cases where the input list is empty.
+- Used in: src/a1_triage.py
+
+
+## Entry 10
+- Date: 22 November
+- Tool: OpenAI (2026). ChatGPT (GPT-6). Retrieved [date] from https://chat.openai.com
+- Purpose: programming guidance and debugging
+- Prompt: "Help me understand how to implement impact_counts(results) using dictionaries. How should I handle zero counts?"
+- Output: ChatGPT explained how to iterate through the results, count impact categories using a dictionary and ensure that categories with no occurrences are handled correctly.
+- Verified by: Checked the dictionary keys and counting results against the expected impact categories in the assignment requirements.
+- My change: Implemented impact_counts(results) and checked its behaviour with normal and empty input cases.
+- Used in: src/a1_triage.py
+
+## Entry 11
+- Date: 22 November 2026
+- Tool: OpenAI (2026). ChatGPT (GPT-6). Retrieved [date] from https://chat.openai.com
+- Purpose: programming guidance and algorithm review
+- Prompt: "Can you guide me on implementing gene_summary(results)? I need to summarise genes, sort them alphabetically and calculate the mean depth correctly."
+- Output: ChatGPT explained how to group records by gene using dictionaries, calculate summary values and sort gene names alphabetically. It also discussed handling empty inputs and calculating mean depth.
+- Verified by: Compared the grouping, sorting and mean depth calculations with the assignment requirements and manually checked sample results.
+- My change: Implemented gene_summary(results) with dictionary-based grouping, alphabetical gene ordering and mean depth calculation.
+- Used in: src/a1_triage.py
+
+## Entry 12
+- Date: 22 November 2026
+- Tool: OpenAI (2026). ChatGPT (GPT-6). Retrieved [date] from https://chat.openai.com
+- Purpose: testing and debugging
+- Prompt: "Help me plan and check the test cases for decision_counts(), impact_counts() and gene_summary(). What edge cases should I include?"
+- Output: ChatGPT suggested test cases covering normal inputs, empty lists, zero counts, multiple categories, alphabetical gene sorting and mean depth calculations.
+- Verified by: Compared the proposed test cases with the three summary function requirements and checked the expected outputs.
+- My change: Wrote tests for all three summary functions, including normal cases and relevant boundary cases.
+- Used in: tests/test_a1_triage.py
+
+## Entry 13
+- Date: 22 November 2026
+- Tool: OpenAI (2026). ChatGPT (GPT-6). Retrieved [date] from https://chat.openai.com
+- Purpose: documentation review and revision
+- Prompt: "Can you check my summary functions test plan and explain how I should document the use of dictionaries for counting and summarising in docs/design.md?"
+- Output: ChatGPT reviewed the test plan and explained how dictionaries support category counting, gene grouping and summary calculations. It suggested improvements to the documentation's clarity and completeness.
+- Verified by: Compared the revised test plan and dictionary explanation with the assignment requirements and reviewed the updated documentation.
+- My change: Updated the test plan and added an explanation of how dictionaries are used in the three summary functions.
+- Used in: docs/design.md
