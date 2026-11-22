@@ -1,3 +1,5 @@
+import csv
+from io import StringIO
 import copy
 import pytest
 
@@ -454,6 +456,16 @@ def test_results_to_csv_ends_with_newline():
     csv_text = results_to_csv(results)
 
     assert csv_text.endswith("\n")
+    
+def test_results_to_csv_handles_commas_in_reason():
+    result = make_result()
+    result["reason"] = "low depth, review required"
+
+    output = results_to_csv([result])
+    rows = list(csv.DictReader(StringIO(output)))
+
+    assert len(rows) == 1
+    assert rows[0]["reason"] == "low depth, review required"
 
 # ---- build_report ---------------------------------------------------------
 
