@@ -85,35 +85,12 @@ function. The hand trace in section 3 was checked against `results/triage.csv`: 
 **How dictionaries are used for counting and summarising.** decision_counts and impact_counts
 first create a dictionary with every allowed key set to 0 (`{key: 0 for key in DECISIONS}`), so the
 keys are always present, in a fixed order, even when the count is zero. Each result then adds 1 to
-<<<<<<< Updated upstream
-the key for its (cleaned) label. Both functions share one helper, count_labels, so the counting
-code is not copied. gene_summary first groups results in a dictionary of lists
-(`gene -> [results]`, built with setdefault), then loops over `sorted(...)` gene names so the
-output dictionary is in alphabetical order (dicts keep insertion order). Each gene's value is
-itself a dictionary: total, the decision counts (reusing decision_counts) and mean_depth, which
-is the mean of int(depth) over ALL the gene's variants (excluded ones too), rounded to 1 decimal.
-=======
 the key for its cleaned label (`strip()` and `casefold()`). Both functions share one helper,
 count_labels, so the counting code is not copied. gene_summary first groups results in a dictionary
 of lists (`gene -> [results]`, built with setdefault), then loops over `sorted(...)` gene names so the
 output dictionary is in alphabetical order (dicts keep insertion order). Each gene's value is itself
 a dictionary: total, the decision counts (reusing decision_counts) and mean_depth, which is the mean
 of int(depth) over ALL the gene's variants (excluded ones too), rounded to 1 decimal.
->>>>>>> Stashed changes
-
-### Ranking tests
-
-| Test case | Expected result |
-|---|---|
-| Normal ranking | Variants marked `"prioritize"` rank ahead of `"review"` and within the same decision tier, impacts sort in order: `"high"`, `"moderate"`, `"low"`, `"modifier"`. |
-| Excluded variants | Any record with `"decision": "exclude"` is filtered out and never appears in the returned list, regardless of its impact or quality. |
-| Sorting ties | When decision and impact match, ties are broken by higher `quality` first, then higher `depth` and finally smaller `pos` (using numeric, not string, comparison). |
-| Zero `k` | Passing `k = 0` returns an empty list `[]` without raising an error. |
-| Large `k` | When `k` exceeds the number of non-excluded records, all eligible sorted records are returned without raising an index error. |
-| Negative `k` | Passing a negative integer (e.g., `k = -1`) raises a `ValueError`. |
-| Empty results | Passing an empty `results` list (or a list containing only `"exclude"` records) returns an empty list `[]`. |
-| Input preservation | The original `results` list and its dictionaries remain unmodified in their initial order after calling `rank_variants()`. |
-
 
 ## 5. Work plan
 

@@ -12,10 +12,6 @@ All data in this project are **synthetic teaching data**, not clinical data. Not
 
 ## What this project does
 
-The service also ranks non-excluded variants based on decision priority, impact, quality, depth and genomic position, returning the top-k candidates for further review.
-
-<Three or four sentences: what a variant triage service is, what goes in, what comes out.>
-=======
 A variant triage service decides which variant calls from a gene panel an analyst should look at
 first, which are kept for a second look, and which are set aside. This module reads 50 variant calls
 (`data/variants.csv`) and the group's parameters (`data/params.json`), and applies six ordered rules
@@ -94,8 +90,7 @@ with our thresholds. It also holds the 12-case test plan and the group work plan
 - Input is not validated: a missing column or non-numeric depth, quality or pos stops the program
   with a Python error instead of a friendly message. An impact label outside high, moderate, low and
   modifier falls through to rule 6 or 4.
-=======
-The ranking process uses predefined decision, impact, quality, depth and position criteria rather than clinical evidence or predictive models. Therefore, ranking results are intended for educational demonstration only and should not be used for clinical decision-making.
+
 
 ## Who did what
 
@@ -104,11 +99,9 @@ Commit counts are non-merge commits under each member's own name, counted on 23 
 | Member | Main contributions | Commits |
 |---|---|---|
 | MINDY NG YU FANG (A24CS0267) | Implemented `classify_variant()` and `triage()` in `src/a1_triage.py`; wrote the decomposition, pseudocode and hand trace in `docs/design.md`; coordinated the group and set up the repository. | 8 |
-| ELEANOR TING PIK EN (A24CS0247) | Implemented `decision_counts()`, `impact_counts()` and `gene_summary()` in `src/a1_triage.py`; wrote the summary tests and the final 12-test suite in `tests/test_a1_triage.py`; wrote the test plan in `docs/design.md` and this README. | 7 |
+| ELEANOR TING PIK EN (A24CS0247) | Implemented `decision_counts()`, `impact_counts()` and `gene_summary()` in `src/a1_triage.py`; wrote the summary tests and the final 12-test suite in `tests/test_a1_triage.py`; wrote the test plan in `docs/design.md` and this README. | 12 |
 | WONG ZI NING (A24CS0313) | Implemented `rank_variants()` in `src/a1_triage.py`; wrote the ranking tests; contributed the ranking test plan and design improvements in `docs/design.md`; helped with classification fixes and integration review. | 10 |
 | HUSNA SAFIYYAH BINTI MUHAMMAD FAROUK (A24CS0083) | Implemented `results_to_csv()` and `build_report()` in `src/a1_triage.py`; wrote the CSV and report tests. | 2 |
-=======
-| WONG ZI NING (A24CS0313) | Implemented `rank_variants()` in `src/a1_triage.py`; wrote 11 ranking tests in `tests/test_a1_triage.py`; contributed the ranking test plan and design improvements in `docs/design.md`; assisted with classification fixes and integration review. | 9 |
 
 ## AI use
 
