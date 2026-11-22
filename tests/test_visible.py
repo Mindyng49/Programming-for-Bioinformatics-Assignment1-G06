@@ -39,7 +39,8 @@ def test_triage_adds_decision_and_reason():
 
 def test_rank_variants_returns_at_most_k():
     results = triage([make_row(variant=f"v{i}", pos=i) for i in range(5)], PARAMS)
-    assert len(rank_variants(results, 3)) == 3
+    expected_count = 3
+    assert len(rank_variants(results, expected_count)) == expected_count
 
 
 def test_csv_text_starts_with_the_header():

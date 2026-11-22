@@ -4,6 +4,8 @@ Reads variant calls, applies ordered triage rules with named thresholds, records
 reason for every decision and produces summaries, a ranked top-k list, a CSV text
 and a short text report. Nothing here is clinical advice.
 """
+
+import io
 import csv
 import json
 import sys
@@ -60,15 +62,18 @@ def classify_variant(row: dict, params: dict) -> tuple[str, str]:
         return(decision,reason)
     elif quality < min_quality:
         decision = "exclude"
-        reason = f"Rule 2: quality {quality} is below min_quality{min_depth}"
+        reason = f"Rule 2: quality {quality} is below min_quality {min_quality}"
         return decision, reason
-    elif priority_genes and impact in PRIORITY_IMPACTS:
+    elif gene in {g.strip().casefold() for g in priority_genes} and impact in PRIORITY_IMPACTS:
         decision = "prioritize"
         reason = f"Rule 3: priority gene {gene} has {impact} impact"
         return decision, reason
-    elif gene in priority_genes and impact in ("low", "modifier"):
+    elif gene in {g.strip().casefold() for g in priority_genes} and impact in ("low", "modifier"):
         decision = "review"
         reason = f"Rule 4: priority gene {gene} has {impact} impact"
+    elif gene not in {g.strip().casefold() for g in priority_genes} and impact in PRIORITY_IMPACTS:
+        decision = "review"
+        reason = f"Rule 5: non-priority gene {gene} has {impact} impact"
     else:
         decision = "exclude"
         reason = f"Rule 6: non-priority gene {gene} has {impact} impact"
@@ -104,16 +109,6 @@ def count_labels(labels: list[str], keys: tuple[str, ...]) -> dict[str, int]:
             counts[label]+=1
     return counts
 
-    for row in rows:
-        decision, reason = classify_variant(row, params)
-
-        new_row = row.copy()
-        new_row["decision"] = decision
-        new_row["reason"] = reason
-
-        results.append(new_row)
-
-    return results
 
 def decision_counts(results: list[dict]) -> dict[str, int]:
     """Number of results per decision; keys are always prioritize, review, exclude (in order)."""
@@ -200,7 +195,25 @@ def results_to_csv(results: list[dict]) -> str:
 
     Every line ends with a newline. Reason text contains no commas, so no quoting is needed.
     """
-    raise NotImplementedError("TODO: implement results_to_csv")
+    output = io.StringIO()
+    writer = csv.writer(output, lineterminator="\n")
+
+    writer.writerow(CSV_COLUMNS)
+
+    for result in results:
+        writer.writerow([
+            result["variant"],
+            result["gene"],
+            result["chrom"],
+            result["pos"],
+            result["depth"],
+            result["quality"],
+            result["impact"],
+            result["decision"],
+            result["reason"],
+        ])
+
+    return output.getvalue()
 
 
 def build_report(results: list[dict], params: dict) -> str:
@@ -210,7 +223,32 @@ def build_report(results: list[dict], params: dict) -> str:
     'Variants: N', one 'decision: count' line per decision, a blank line,
     'Top K variants' and then 'rank. variant | gene | impact | decision' lines.
     """
-    raise NotImplementedError("TODO: implement build_report")
+    counts = decision_counts(results)
+    top_k = params["top_k"]
+    top_variants = rank_variants(results, top_k)
+
+    lines = [
+        "Variant triage report (synthetic teaching data)",
+        (
+            f"Thresholds: min_depth={params['min_depth']} "
+            f"min_quality={params['min_quality']}"
+        ),
+        f"Priority genes: {', '.join(params['priority_genes'])}",
+        f"Variants: {len(results)}",
+        f"prioritize: {counts['prioritize']}",
+        f"review: {counts['review']}",
+        f"exclude: {counts['exclude']}",
+        "",
+        f"Top {top_k} variants",
+    ]
+
+    for rank, variant in enumerate(top_variants, start=1):
+        lines.append(
+            f"{rank}. {variant['variant']} | {variant['gene']} | "
+            f"{variant['impact']} | {variant['decision']}"
+        )
+
+    return "\n".join(lines) + "\n"
 
 
 def main(argv: list[str] | None = None) -> int:
