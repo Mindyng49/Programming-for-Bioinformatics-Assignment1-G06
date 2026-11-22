@@ -4,6 +4,8 @@ Reads variant calls, applies ordered triage rules with named thresholds, records
 reason for every decision and produces summaries, a ranked top-k list, a CSV text
 and a short text report. Nothing here is clinical advice.
 """
+
+import io
 import csv
 import json
 import sys
@@ -193,7 +195,25 @@ def results_to_csv(results: list[dict]) -> str:
 
     Every line ends with a newline. Reason text contains no commas, so no quoting is needed.
     """
-    raise NotImplementedError("TODO: implement results_to_csv")
+    output = io.StringIO()
+    writer = csv.writer(output, lineterminator="\n")
+
+    writer.writerow(CSV_COLUMNS)
+
+    for result in results:
+        writer.writerow([
+            result["variant"],
+            result["gene"],
+            result["chrom"],
+            result["pos"],
+            result["depth"],
+            result["quality"],
+            result["impact"],
+            result["decision"],
+            result["reason"],
+        ])
+
+    return output.getvalue()
 
 
 def build_report(results: list[dict], params: dict) -> str:
@@ -203,7 +223,32 @@ def build_report(results: list[dict], params: dict) -> str:
     'Variants: N', one 'decision: count' line per decision, a blank line,
     'Top K variants' and then 'rank. variant | gene | impact | decision' lines.
     """
-    raise NotImplementedError("TODO: implement build_report")
+    counts = decision_counts(results)
+    top_k = params["top_k"]
+    top_variants = rank_variants(results, top_k)
+
+    lines = [
+        "Variant triage report (synthetic teaching data)",
+        (
+            f"Thresholds: min_depth={params['min_depth']} "
+            f"min_quality={params['min_quality']}"
+        ),
+        f"Priority genes: {', '.join(params['priority_genes'])}",
+        f"Variants: {len(results)}",
+        f"prioritize: {counts['prioritize']}",
+        f"review: {counts['review']}",
+        f"exclude: {counts['exclude']}",
+        "",
+        f"Top {top_k} variants",
+    ]
+
+    for rank, variant in enumerate(top_variants, start=1):
+        lines.append(
+            f"{rank}. {variant['variant']} | {variant['gene']} | "
+            f"{variant['impact']} | {variant['decision']}"
+        )
+
+    return "\n".join(lines) + "\n"
 
 
 def main(argv: list[str] | None = None) -> int:
