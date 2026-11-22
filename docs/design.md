@@ -51,55 +51,55 @@ END
 
 | Variant | Gene | Depth | Quality | Impact | Rule that fires | Decision | Reason |
 |---|---|---|---|---|---|---|---|
-| v1 | BRCA2 | 9 | 90 | high | 5 | review | Rule 5: BRCA2 is not a priority gene and has high impactt |
-| v2 | EGFR | 10 | 90 | high | 3 | prioritize | Rule 3: EGFR is a priority gene and has high impact |
-| v3 | KRAS | 11 | 90 | moderate | 3 | prioritize| Rule 3: KRAS is a priority gene and has moderate impact |
+| v1 | BRCA2 | 9 | 90 | high | 5 | review | Rule 5: non-priority gene BRCA2 has high impact |
+| v2 | EGFR | 10 | 90 | high | 3 | prioritize | Rule 3: priority gene EGFR has high impact |
+| v3 | KRAS | 11 | 90 | moderate | 3 | prioritize | Rule 3: priority gene KRAS has moderate impact |
 | v4 | TP53 | 30 | 79 | high | 2 | exclude | Rule 2: quality 79 is below min_quality 80 |
-| v5 | PTEN | 30 | 80 | high | 3 | prioritize | Rule 3: PTEN is a priority gene and has high impact |
-| v6 | ATM | 30 | 81 | high | 5 | review | Rule 5: ATM is not a priority gene and has high impact |
-| v9 | EGFR | 32 | 100 | low | 4 | review | Rule 4: EGFR is a priority gene and has low impact |
-| v12 | RB1 | 33 | 95 | modifier | 6 | exclude | Rule 6: RB1 is not a priority gene and has modifier impact |
+| v5 | PTEN | 30 | 80 | high | 3 | prioritize | Rule 3: priority gene PTEN has high impact |
+| v6 | ATM | 30 | 81 | high | 5 | review | Rule 5: non-priority gene ATM has high impact |
+| v9 | EGFR | 32 | 100 | low | 4 | review | Rule 4: priority gene EGFR has low impact |
+| v12 | RB1 | 33 | 95 | modifier | 6 | exclude | Rule 6: non-priority gene RB1 has modifier impact |
 
 ## 4. Test plan
 
-Our thresholds: min_depth=8, min_quality=80. Boundaries are inclusive (equal passes).
+Our thresholds: `min_depth = 8`, `min_quality = 80`. Boundaries are inclusive: a value equal to the
+threshold passes. The 12 tests below are in `tests/test_a1_triage.py` (same numbers). Each test checks
+one requirement of the brief; together they cover normal, boundary, awkward and invalid input for every
+function. The hand trace in section 3 was checked against `results/triage.csv`: all 8 rows match.
 
-| # | Type | Function | Input | Expected |
-|---|---|---|---|---|
-| 1 | Boundary | classify_variant | depth 7 (one below min_depth) | exclude, reason mentions depth 7 and 8 |
-| 2 | Boundary | classify_variant | depth 8 (exactly min_depth) | passes the depth rule |
-| 3 | Boundary | classify_variant | depth 9 (one above) | passes the depth rule |
-| 4 | Boundary | classify_variant | quality 79 (one below min_quality) | exclude, reason mentions quality 79 and 80 |
-| 5 | Boundary | classify_variant | quality 80 (exactly min_quality) | passes the quality rule |
-| 6 | Boundary | classify_variant | quality 81 (one above) | passes the quality rule |
-| 7 | Normal | classify_variant | priority gene + high, non-priority + low, etc. | rules 3 to 6 give prioritize / review / review / exclude |
-| 8 | Rule order | classify_variant | depth 1 and quality 1 | exclude for low depth (rule 1 wins) |
-| 9 | Awkward | classify_variant | gene ' egfr ', impact 'HIGH' | matches EGFR and high after strip() and casefold() |
-| 10 | Normal | triage | two rows | new dicts, same order, input rows unchanged |
-| 11 | Normal | decision_counts | 1 prioritize, 2 review, 1 exclude | {prioritize: 1, review: 2, exclude: 1} |
-| 12 | Awkward | decision_counts | empty list | all three keys present with 0, in fixed order |
-| 13 | Normal | impact_counts | mix with some excluded | excluded variants are not counted |
-| 14 | Awkward | impact_counts | impact ' HIGH ' / 'Moderate' | counted as high / moderate; keys in fixed order |
-| 15 | Awkward | impact_counts | empty list | all four keys with 0 |
-| 16 | Normal | gene_summary | genes PTEN, CFTR, KRAS | keys in alphabetical order CFTR, KRAS, PTEN |
-| 17 | Normal | gene_summary | EGFR depths 7, 8, 8 (one excluded) | counts 1/1/1, mean_depth 7.7 (excluded included) |
-| 18 | Awkward | gene_summary | gene ' KRAS ', depth given as int | merged under KRAS, mean_depth 9.5 |
-| 19 | Awkward | gene_summary | empty list | {} |
-| 20 | Normal | rank_variants | mixed results, k = 3 | at most 3, no excluded, sorted with tie-breaks |
-| 21 | Awkward | rank_variants | k = 0 and k larger than the data | [] and all candidates |
-| 22 | Invalid | rank_variants | k = -1 | raises ValueError (pytest.raises) |
-| 23 | Normal | results_to_csv / build_report | small results list | exact header line and report line formats |
-| 24 | Side effects | all summary functions | any results | input list is not modified |
+| # | Owner | Type | Function | Input | Expected |
+|---|---|---|---|---|---|
+| 1 | M1 | Boundary | classify_variant | depth 7 / 8 / 9 (one below, at, one above min_depth) | 7 is excluded, and the reason names depth, 7 and 8; 8 and 9 pass |
+| 2 | M1 | Boundary | classify_variant | quality 79 / 80 / 81 (one below, at, one above min_quality) | 79 is excluded, and the reason names quality, 79 and 80; 80 and 81 pass |
+| 3 | M1 | Normal | classify_variant | priority + moderate, priority + low, other + high, other + modifier; and depth 1 with quality 1 | prioritize / review / review / exclude; depth 1 and quality 1 gives a depth reason (rule order); no comma in the reason |
+| 4 | M1 | Awkward | classify_variant | gene `' egfr '`, impact `'HIGH'`, depth and quality given as numbers; other params (min_depth 40, gene TP53) | matches EGFR and high; other params give a different answer (exclude), so nothing is hard-coded |
+| 5 | M1 | Normal | triage | two rows | new dicts with decision and reason, same order; input rows and params unchanged |
+| 6 | M2 | Normal + awkward | decision_counts, impact_counts | prioritize (impact `' HIGH '`), review (low), exclude (high); empty list | {1, 1, 1}; impacts {high 1, moderate 0, low 1, modifier 0} with the excluded variant left out, keys in fixed order; empty list gives all zeros |
+| 7 | M2 | Normal + awkward | gene_summary | PTEN, then EGFR with depths 7, 8, 8 (one excluded); empty list | genes in alphabetical order EGFR, PTEN; EGFR total 3, 1/1/1, mean_depth 7.7 (the excluded variant still counts); empty list gives {} |
+| 8 | M3 | Normal | rank_variants | variants that tie on decision, impact, quality and depth in turn, plus one excluded variant | order v6, v5, v4, v3, v2, v1: prioritize before review, then high before moderate, higher quality, higher depth, smaller pos; excluded variant never listed |
+| 9 | M3 | Awkward | rank_variants | k = 0; k = 10 with 1 candidate; empty list | []; only the 1 candidate; []; the input list is not changed |
+| 10 | M3 | Invalid | rank_variants | k = -1 | raises ValueError (`pytest.raises`) |
+| 11 | M4 | Normal + awkward | results_to_csv | two results; empty list | header line exactly as specified, one line per result in order, ends with a newline; empty list gives only the header |
+| 12 | M4 | Normal + awkward | build_report | 3 results (one excluded), top_k 8 | title, Thresholds, Priority genes, Variants and count lines in the fixed format, a blank line, `Top 8 variants`, then only the 2 qualifying variants |
 
 **How dictionaries are used for counting and summarising.** decision_counts and impact_counts
 first create a dictionary with every allowed key set to 0 (`{key: 0 for key in DECISIONS}`), so the
 keys are always present, in a fixed order, even when the count is zero. Each result then adds 1 to
+<<<<<<< Updated upstream
 the key for its (cleaned) label. Both functions share one helper, count_labels, so the counting
 code is not copied. gene_summary first groups results in a dictionary of lists
 (`gene -> [results]`, built with setdefault), then loops over `sorted(...)` gene names so the
 output dictionary is in alphabetical order (dicts keep insertion order). Each gene's value is
 itself a dictionary: total, the decision counts (reusing decision_counts) and mean_depth, which
 is the mean of int(depth) over ALL the gene's variants (excluded ones too), rounded to 1 decimal.
+=======
+the key for its cleaned label (`strip()` and `casefold()`). Both functions share one helper,
+count_labels, so the counting code is not copied. gene_summary first groups results in a dictionary
+of lists (`gene -> [results]`, built with setdefault), then loops over `sorted(...)` gene names so the
+output dictionary is in alphabetical order (dicts keep insertion order). Each gene's value is itself
+a dictionary: total, the decision counts (reusing decision_counts) and mean_depth, which is the mean
+of int(depth) over ALL the gene's variants (excluded ones too), rounded to 1 decimal.
+>>>>>>> Stashed changes
 
 ### Ranking tests
 
