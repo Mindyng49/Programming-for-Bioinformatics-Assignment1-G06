@@ -26,6 +26,7 @@ During the first two weeks, each member will have the following responsibilities
 - Member 2 (Eleanor): Summary implementer. Responsible for implementing decision_counts(), impact_counts() and gene_summary(), together with related tests.
 
 - Member 3 (Zi Ning): Ranking implementer. Responsible for implementing rank_variants(), preparing the ranking pseudocode and developing ranking tests.
+- Member 3 (Zi Ning): Ranking implementer. Responsible for implementing rank_variants() and developing ranking tests.
 
 - Member 4 (Husna): Output and testing implementer. Responsible for implementing results_to_csv() and build_report(), testing output functions and helping with project integration and README documentation.
 
@@ -67,8 +68,7 @@ Roles will rotate after the first two weeks based on group discussion so that ev
 
 ## 7. Use of AI tools (see the Assignment 1 brief)
 
-We keep ONE shared AI_USE_LOG.md. <Say who writes the entries and how you check each other before
-submission.> Every member is responsible for the whole submission, including AI use by others, and
+We keep ONE shared AI_USE_LOG.md. Every member is responsible for the whole submission, including AI use by others, and
 every member signs the log and this contract.
 
 ## 8. Signatures
@@ -76,4 +76,4 @@ every member signs the log and this contract.
 - Signed: MINDY NG YU FANG, A24CS0267, 21/11/2026
 - Signed: ELEANOR TING PIK EN, A24CS0247,  18/11/2026
 - Signed: WONG ZI NING, A24CS0313,  21/11/2026
-- Signed: HUSNA SAFIYYAH BINTI MUHAMMAD FAROUK, A24CS0083, <date>
+- Signed: HUSNA SAFIYYAH BINTI MUHAMMAD FAROUK, A24CS0083, 21/11/2026
