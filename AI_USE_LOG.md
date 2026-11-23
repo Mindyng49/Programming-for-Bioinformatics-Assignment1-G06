@@ -4,8 +4,8 @@
 
 - Course: SECB3203
 - Assessment: Assignment 1
-- Student name: < MINDY NG YU FANG, ELEANOR TING PIK EN, WONG ZI NING, HUSNA SAFIYYAH BINTI MUHAMMAD FAROUK >
-- Matric no: <A24CS0267, A24CS0247, A24CS0313, A24CS0083>
+- Student name: MINDY NG YU FANG, ELEANOR TING PIK EN, WONG ZI NING, HUSNA SAFIYYAH BINTI MUHAMMAD FAROUK
+- Matric no: A24CS0267, A24CS0247, A24CS0313, A24CS0083
 - Group ID: G06
 - AI level: 1
 - Tools cited: UTM format, OpenAI (2026). ChatGPT (GPT-6). Retrieved 22 November 2026 from https://chat.openai.com
