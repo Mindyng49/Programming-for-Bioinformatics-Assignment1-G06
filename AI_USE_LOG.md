@@ -73,7 +73,6 @@
 
 ## Entry 6
 
-- Student: WONG ZI NING (A24CS0313), Member 3
 - Date: 22 November 2026 2:13am
 - Tool: OpenAI (2026). ChatGPT (GPT-6). https://chat.openai.com
 - Purpose: programming guidance and review
@@ -85,7 +84,6 @@
 
 ## Entry 7
 
-- Student: WONG ZI NING (A24CS0313), Member 3
 - Date: 22 November 2026 3:20am
 - Tool: OpenAI (2026). ChatGPT (GPT-6). https://chat.openai.com
 - Purpose: testing and debugging
@@ -106,6 +104,16 @@
 - Verified by: Reviewed `git diff -- docs/design.md`.
 - My change: Incorporated AI-generated documentation edits, committed them as `e7b67ec`, pushed `zining` and merged the change through the group workflow.
 - Used in: `docs/design.md`
+
+## Entry 9
+- Date: 22 November 2026
+- Tool: OpenAI (2026). ChatGPT (GPT-6). Retrieved [date] from https://chat.openai.com
+- Purpose: programming guidance
+- Prompt: "Can you guide me on how to implement decision_counts(results) based on the assignment requirements?"
+- Output: ChatGPT explained how to use dictionaries to count the occurrences of each decision category and handle empty input lists and zero counts.
+- Verified by: Compared the suggested counting logic with the assignment requirements and checked the expected output structure.
+- My change: Implemented the decision_counts(results) function and handled cases where the input list is empty.
+- Used in: src/a1_triage.py
 
 ## Entry 10
 - Date: 22 November
