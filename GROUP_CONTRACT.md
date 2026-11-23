@@ -25,6 +25,7 @@ During the first two weeks, each member will have the following responsibilities
 
 - Member 2 (Eleanor): Summary implementer. Responsible for implementing decision_counts(), impact_counts() and gene_summary(), together with related tests.
 
+- Member 3 (Zi Ning): Ranking implementer. Responsible for implementing rank_variants(), preparing the ranking pseudocode and developing ranking tests.
 - Member 3 (Zi Ning): Ranking implementer. Responsible for implementing rank_variants() and developing ranking tests.
 
 - Member 4 (Husna): Output and testing implementer. Responsible for implementing results_to_csv() and build_report(), testing output functions and helping with project integration and README documentation.

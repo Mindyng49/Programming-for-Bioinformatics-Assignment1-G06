@@ -61,6 +61,7 @@
 
 ## Entry 5
 
+- Student: WONG ZI NING (A24CS0313), Member 3
 - Date: 22 November 2026 1:10am
 - Tool: OpenAI (2026). ChatGPT (GPT-6). https://chat.openai.com
 - Purpose: design guidance
@@ -72,6 +73,7 @@
 
 ## Entry 6
 
+- Student: WONG ZI NING (A24CS0313), Member 3
 - Date: 22 November 2026 2:13am
 - Tool: OpenAI (2026). ChatGPT (GPT-6). https://chat.openai.com
 - Purpose: programming guidance and review
@@ -83,6 +85,7 @@
 
 ## Entry 7
 
+- Student: WONG ZI NING (A24CS0313), Member 3
 - Date: 22 November 2026 3:20am
 - Tool: OpenAI (2026). ChatGPT (GPT-6). https://chat.openai.com
 - Purpose: testing and debugging
@@ -94,6 +97,7 @@
 
 ## Entry 8
 
+- Student: WONG ZI NING (A24CS0313), Member 3
 - Date: 22 November 2026 4:10am
 - Tool: OpenAI (2026). ChatGPT (GPT-6). https://chat.openai.com
 - Purpose: documentation review and revision
@@ -104,6 +108,28 @@
 - Used in: `docs/design.md`
 
 ## Entry 9
+
+- Student: HUSNA SAFIYYAH BINTI MUHAMMAD FAROUK (A24CS0083), Member 4
+- Date: 23 November 2026
+- Tool: OpenAI (2026). ChatGPT (GPT-6). https://chat.openai.com
+- Purpose: Software testing and output validation
+- Prompt: "How can I verify the correctness and reliability of my CSV export and report generation functions?"
+- Output: ChatGPT provided guidance on validating CSV formatting, output consistency, report content, decision summaries and top-k variant presentation. It also explained how to interpret automated test results.
+- Verified by: Executed the automated test suite and confirmed that all 38 tests passed successfully.
+- My change: Developed and evaluated test cases for the CSV export and report generation functions to verify their expected output and handling of different input conditions.
+- Used in: `test_a1_triage.py`
+
+## Entry 10
+
+- Student: HUSNA SAFIYYAH BINTI MUHAMMAD FAROUK (A24CS0083), Member 4
+- Date: 23 November 2026
+- Tool: OpenAI (2026). ChatGPT (GPT-6). https://chat.openai.com
+- Purpose: Software configuration management and version control
+- Prompt: "How should I manage and synchronize my development changes with the group's GitHub repository?"
+- Output: ChatGPT provided guidance on Git branching, staging, committing and synchronizing local changes with the remote repository.
+- Verified by: Checked the active development branch, reviewed the working tree status and verified synchronization with the remote GitHub repository.
+- My change: Managed the development workflow within the assigned member4-output branch and verified that the local repository was synchronized with the remote branch.
+- Used in: GitHub repository, member4-output branch
 - Date: 22 November 2026
 - Tool: OpenAI (2026). ChatGPT (GPT-6). Retrieved [date] from https://chat.openai.com
 - Purpose: programming guidance
