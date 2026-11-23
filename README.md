@@ -101,7 +101,7 @@ Commit counts are non-merge commits under each member's own name, counted on 23 
 | MINDY NG YU FANG (A24CS0267) | Implemented `classify_variant()` and `triage()` in `src/a1_triage.py`; wrote the decomposition, pseudocode and hand trace in `docs/design.md`; coordinated the group and set up the repository. | 8 |
 | ELEANOR TING PIK EN (A24CS0247) | Implemented `decision_counts()`, `impact_counts()` and `gene_summary()` in `src/a1_triage.py`; wrote the summary tests and the final 12-test suite in `tests/test_a1_triage.py`; wrote the test plan in `docs/design.md` and this README. | 12 |
 | WONG ZI NING (A24CS0313) | Implemented `rank_variants()` in `src/a1_triage.py`; wrote the ranking tests; contributed the ranking test plan and design improvements in `docs/design.md`; helped with classification fixes and integration review. | 10 |
-| HUSNA SAFIYYAH BINTI MUHAMMAD FAROUK (A24CS0083) | Implemented `results_to_csv()` and `build_report()` in `src/a1_triage.py`; wrote the CSV and report tests. | 5 |
+| HUSNA SAFIYYAH BINTI MUHAMMAD FAROUK (A24CS0083) | Implemented `results_to_csv()` and `build_report()` in `src/a1_triage.py`; wrote the CSV and report tests. | 7 |
 
 ## AI use
 
