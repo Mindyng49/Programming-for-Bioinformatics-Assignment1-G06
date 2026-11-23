@@ -61,7 +61,6 @@
 
 ## Entry 5
 
-- Student: WONG ZI NING (A24CS0313), Member 3
 - Date: 22 November 2026 1:10am
 - Tool: OpenAI (2026). ChatGPT (GPT-6). https://chat.openai.com
 - Purpose: design guidance
@@ -95,7 +94,6 @@
 
 ## Entry 8
 
-- Student: WONG ZI NING (A24CS0313), Member 3
 - Date: 22 November 2026 4:10am
 - Tool: OpenAI (2026). ChatGPT (GPT-6). https://chat.openai.com
 - Purpose: documentation review and revision
@@ -116,7 +114,7 @@
 - Used in: src/a1_triage.py
 
 ## Entry 10
-- Date: 22 November
+- Date: 22 November 2026
 - Tool: OpenAI (2026). ChatGPT (GPT-6). Retrieved [date] from https://chat.openai.com
 - Purpose: programming guidance and debugging
 - Prompt: "Help me understand how to implement impact_counts(results) using dictionaries. How should I handle zero counts?"
