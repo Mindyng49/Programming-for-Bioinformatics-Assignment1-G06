@@ -96,7 +96,7 @@ of int(depth) over ALL the gene's variants (excluded ones too), rounded to 1 dec
 
 - Member 1 (Mindy): Responsible for  implementing classify_variant() and triage()
 - Member 2 (Eleanor): Responsible for implementing decision_counts(), impact_counts() and gene_summary(), together with related tests.
-- Member 3 (Zi Ning): Responsible for implementing rank_variants(), preparing the ranking pseudocode and developing ranking tests.
+- Member 3 (Zi Ning): Responsible for implementing rank_variants() and developing ranking tests.
 - Member 4 (Husna): Responsible for implementing results_to_csv() and build_report(), testing output functions 
 
 - Order of Implementation
